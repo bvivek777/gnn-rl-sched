@@ -16,7 +16,6 @@ from param import args
 
 cuda = args.cuda
 
-# not change
 class GCN(nn.Module):
 
     def __init__(self, aggregator, features=5, hidden_layer_size=5, embedding_size=1):
@@ -43,8 +42,6 @@ class GCN(nn.Module):
 
         return h
 
-# Implementation of neural network
-# online and tar
 class Net(nn.Module):
 
     def __init__(self, aggregator, features=5, hidden_layer_size=10, embedding_size=1):
@@ -66,7 +63,6 @@ class Net(nn.Module):
 
         return logits  
 
-
 class Agent():
 
     def __init__(self, save_dir="./models", assist=True, assist_p=(1, 7), aggregator="mean"):
@@ -77,9 +73,9 @@ class Agent():
         self.net = self.net.to(cuda)
         self.aggregator = aggregator
 
-        # self.exploration_rate = 1
-        # self.exploration_rate_decay = args.exploration_rate_decay # 0.9999975 # 0.999992 
-        # self.exploration_rate_min = 0.1
+        self.exploration_rate = 1
+        self.exploration_rate_decay = args.exploration_rate_decay # 0.9999975 # 0.999992 
+        self.exploration_rate_min = 0.1
         self.curr_step = 0
 
         self.memory = deque(maxlen=100000)
@@ -90,9 +86,9 @@ class Agent():
         self.gamma = args.gamma
 
         self.optimizer = torch.optim.Adam(self.net.parameters(), lr=args.lr)
-        #self.loss_fn = torch.nn.SmoothL1Loss()
+        self.loss_fn = torch.nn.SmoothL1Loss()
 
-      #  self.burnin = args.burnin            # min. experiences before training
+        self.burnin = args.burnin            # min. experiences before training
         self.learn_every = args.learn_every  # no. of experiences between updates to Q_online
         self.sync_every = args.sync_every    # no. of experiences between Q_target & Q_online sync
 
@@ -105,24 +101,24 @@ class Agent():
         G, node_inputs, leaf_nodes = state
         
         # EXPLORE
-        # if np.random.rand() < self.exploration_rate:
-        #     if assist_index:
-        #         action_idx = assist_index
-        #     else:
-        #         index = randint(len(leaf_nodes))
-        #         action_idx = (leaf_nodes[index], 1)
+        if np.random.rand() < self.exploration_rate:
+            if assist_index:
+                action_idx = assist_index
+            else:
+                index = randint(len(leaf_nodes))
+                action_idx = (leaf_nodes[index], 1)
 
         # EXPLOIT
-        #else:
-        logits = self.net(G.to(cuda), node_inputs.to(cuda), model="target")
-        req    = torch.argmax(logits[leaf_nodes]).item()
-        action_idx = (leaf_nodes[req], 1)
-        del logits
+        else:
+            logits = self.net(G.to(cuda), node_inputs.to(cuda), model="target")
+            req    = torch.argmax(logits[leaf_nodes]).item()
+            action_idx = (leaf_nodes[req], 1)
+            del logits
 
 
         # decrease exploration_rate
-        # self.exploration_rate *= self.exploration_rate_decay
-        # self.exploration_rate = max(self.exploration_rate_min, self.exploration_rate)
+        self.exploration_rate *= self.exploration_rate_decay
+        self.exploration_rate = max(self.exploration_rate_min, self.exploration_rate)
 
         # increment step
         self.curr_step += 1
@@ -173,30 +169,24 @@ class Agent():
 
         return  rewards
 
-    # def update_Q_batch(self, td_estimate, td_target):
-    #     loss = self.loss_fn(td_estimate, td_target.to(cuda))
-    #     self.optimizer.zero_grad()
-    #     loss.backward()
-    #     self.optimizer.step()
-    #     total_loss = loss.item()
-    #     return total_loss
+    def update_Q_batch(self, td_estimate, td_target):
+        loss = self.loss_fn(td_estimate, td_target.to(cuda))
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        total_loss = loss.item()
+        return total_loss
 
     def sync_Q_target(self):
         self.net.target.load_state_dict(self.net.target.state_dict())
 
-    # def save(self, episode=0):
-    #     save_path = (self.save_dir + f"/sched_net_{self.aggregator}_{episode}.pt")
-    #     torch.save(
-    #         dict(model=self.net.state_dict(), exploration_rate=self.exploration_rate),
-    #         save_path,
-    #     )
-    #     print(f"Sched_net saved to {save_path} at step {self.curr_step}")
-        # def save(self, episode=0):
-        #     save_path = (self.save_dir + f"/sched_net_{self.aggregator}_{episode}.pt")
-        #     torch.save(
-        #         dict(model=self.net.state_dict(),
-        #         save_path)
-           # print(f"Sched_net saved to {save_path} at step {self.curr_step}")
+    def save(self, episode=0):
+        save_path = (self.save_dir + f"/sched_net_{self.aggregator}_{episode}.pt")
+        torch.save(
+            dict(model=self.net.state_dict(), exploration_rate=self.exploration_rate),
+            save_path,
+        )
+        print(f"Sched_net saved to {save_path} at step {self.curr_step}")
 
     def get_batch(self):
         # Sample from memory
@@ -242,8 +232,8 @@ class Agent():
         if self.curr_step % self.sync_every == 0:
             self.sync_Q_target()
 
-        # if self.curr_step < self.burnin:
-        #     return None, None
+        if self.curr_step < self.burnin:
+            return None, None
 
         if self.curr_step % self.learn_every != 0:
             return None, None
@@ -257,18 +247,18 @@ class Agent():
         td_tgt = self.td_target_batch(rewards, next_state, done)
         
         # get the loss function
-        # loss = self.update_Q_batch(td_est, td_tgt)
+        loss = self.update_Q_batch(td_est, td_tgt)
 
-        return td_est.flatten().mean().item(), #loss
+        return td_est.flatten().mean().item(), loss
 
-    def load(self, file:str, new_rate=0.6):
+    def load(self, file:str, exploration_rate=False, new_rate=0.6):
         path = self.save_dir+"/"+file
         loaded_file = torch.load(path)
         self.net.load_state_dict(loaded_file["model"])
-        # if exploration_rate:
-        #     self.exploration_rate = loaded_file["exploration_rate"]
-        # else:
-        #     self.exploration_rate = new_rate
+        if exploration_rate:
+            self.exploration_rate = loaded_file["exploration_rate"]
+        else:
+            self.exploration_rate = new_rate
         self.net.eval()
 
     def direct_train(self, env:GraphWrapper, episodes=10):
@@ -290,8 +280,7 @@ class MetricLogger:
         with open(self.save_log, "w") as f:
             f.write(
                 f"{'Episode':>8}{'Step':>8}{'Epsilon':>10}{'MeanReward':>15}"
-                f"{'MeanLength':>15}"
-                #{'MeanLoss':>15}{'MeanQValue':>15}"
+                f"{'MeanLength':>15}{'MeanLoss':>15}{'MeanQValue':>15}"
                 f"{'TimeDelta':>15}{'Time':>20}\n"
             )
         self.ep_rewards_plot = save_dir + "/reward_plot_"+aggregator+"_"+version+".png"
@@ -317,7 +306,7 @@ class MetricLogger:
         # Timing
         self.record_time = time.time()
 
-    def log_step(self, reward, q):
+    def log_step(self, reward, loss, q):
         self.curr_ep_reward += reward
         self.curr_ep_length += 1
         if loss:
@@ -343,18 +332,18 @@ class MetricLogger:
     def init_episode(self):
         self.curr_ep_reward = 0.0
         self.curr_ep_length = 0
-       # self.curr_ep_loss = 0.0
+        self.curr_ep_loss = 0.0
         self.curr_ep_q = 0.0
-      #  self.curr_ep_loss_length = 0
+        self.curr_ep_loss_length = 0
 
     def record(self, episode, epsilon, step):
         mean_ep_reward = np.round(np.mean(self.ep_rewards[-100:]), 6)
         mean_ep_length = np.round(np.mean(self.ep_lengths[-100:]), 6)
-       # mean_ep_loss = np.round(np.mean(self.ep_avg_losses[-100:]), 6)
+        mean_ep_loss = np.round(np.mean(self.ep_avg_losses[-100:]), 6)
         mean_ep_q = np.round(np.mean(self.ep_avg_qs[-100:]), 6)
         self.moving_avg_ep_rewards.append(mean_ep_reward)
         self.moving_avg_ep_lengths.append(mean_ep_length)
-       # self.moving_avg_ep_avg_losses.append(mean_ep_loss)
+        self.moving_avg_ep_avg_losses.append(mean_ep_loss)
         self.moving_avg_ep_avg_qs.append(mean_ep_q)
 
         last_record_time = self.record_time
@@ -367,7 +356,7 @@ class MetricLogger:
             f"Epsilon :  {epsilon} \n"
             f"Mean Reward :  {mean_ep_reward} \n"
             f"Mean Length :  {mean_ep_length} \n"
-           # f"Mean Loss :  {mean_ep_loss} \n"
+            f"Mean Loss :  {mean_ep_loss} \n"
             f"Mean Q Value :  {mean_ep_q} \n"
             f"Time Delta :  {time_since_last_record} "
         )
@@ -375,16 +364,12 @@ class MetricLogger:
         with open(self.save_log, "a") as f:
             f.write(
                 f"{episode:8d}{step:8d}{epsilon:10.3f}"
-                f"{mean_ep_reward:15.3f}{mean_ep_length:15.3f}"
-                # {mean_ep_loss:15.3f}
-                # {mean_ep_q:15.3f}"
+                f"{mean_ep_reward:15.3f}{mean_ep_length:15.3f}{mean_ep_loss:15.3f}{mean_ep_q:15.3f}"
                 f"{time_since_last_record:15.3f}"
                 f"{datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S'):>20}\n"
             )
 
-        for metric in ["ep_rewards", "ep_lengths", 
-        #"ep_avg_losses", 
-        "ep_avg_qs"]:
+        for metric in ["ep_rewards", "ep_lengths", "ep_avg_losses", "ep_avg_qs"]:
             plt.plot(getattr(self, f"moving_avg_{metric}"))
             plt.xlabel('episodes')
             plt.ylabel(metric)
