@@ -1,0 +1,128 @@
+Parameters for Environment and Agent set successfully.
+Arguments function called successfully.
+Entered Utils file
+Using backend: pytorch
+Initializing environment class... 
+Loading warmup data file..
+loading training data
+Initializing environment... 
+[-2465.7763837208327, 2595.6]
+Seed :  8540
+Ended episode | Done :  True  | Steps :  3352  | Reward : -1964.4154422598554  | Loss:  0.0
+Episode :  2 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  43.513 
+[-2465.5850539072057, 2595.6]
+Seed :  63
+Ended episode | Done :  True  | Steps :  3267  | Reward : -2088.3009422598566  | Loss:  0.0
+Episode :  3 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  43.092 
+[-2465.3327057331703, 2595.6]
+Seed :  27528
+Ended episode | Done :  True  | Steps :  3467  | Reward : -2110.228452259859  | Loss:  0.0
+Episode :  4 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  46.342 
+[-2466.0703387119133, 2595.6]
+Seed :  30936
+Ended episode | Done :  True  | Steps :  3292  | Reward : -1902.8497922598594  | Loss:  0.0
+Episode :  5 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  44.273 
+[-2466.128926827699, 2595.6]
+Seed :  89737
+Ended episode | Done :  True  | Steps :  3202  | Reward : -2225.394362259861  | Loss:  0.0
+Episode :  6 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  37.421 
+[-2465.2727587506606, 2595.6]
+Seed :  74072
+Ended episode | Done :  True  | Steps :  3443  | Reward : -2278.5960822598618  | Loss:  0.0
+Episode :  7 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  45.237 
+[-2465.8586173742337, 2595.6]
+Seed :  37426
+Ended episode | Done :  True  | Steps :  3270  | Reward : -1896.899132259859  | Loss:  0.0
+Episode :  8 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  46.582 
+[-2465.8024912201736, 2595.6]
+Seed :  78130
+Ended episode | Done :  True  | Steps :  3283  | Reward : -1778.3447722598555  | Loss:  0.0
+Episode :  9 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  47.093 
+[-2465.710801706994, 2595.6]
+Seed :  29361
+Ended episode | Done :  True  | Steps :  3361  | Reward : -1839.08301225986  | Loss:  0.0
+Episode :  10 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  43.553 
+[-2465.9488376973864, 2595.6]
+Seed :  62668
+Ended episode | Done :  True  | Steps :  3377  | Reward : -2201.0246222598544  | Loss:  0.0
+Episode :  11 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  40.755 
+[-2465.355812861104, 2595.6]
+Seed :  67999
+Ended episode | Done :  True  | Steps :  3359  | Reward : -1840.2597522598576  | Loss:  0.0
+Episode :  12 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  41.134 
+[-2465.3093293982283, 2595.6]
+Seed :  36700
+Ended episode | Done :  True  | Steps :  3391  | Reward : -2091.775072259857  | Loss:  0.0
+Episode :  13 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  42.08 
+[-2466.0193393462555, 2595.6]
+Seed :  80533
+Ended episode | Done :  True  | Steps :  3619  | Reward : -2288.467852259864  | Loss:  0.0
+Episode :  14 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  44.896 
+[-2465.290195107256, 2595.6]
+Seed :  29805
+Ended episode | Done :  True  | Steps :  3156  | Reward : -1594.4402422598607  | Loss:  0.0
+Episode :  15 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  39.329 
+[-2465.907004203538, 2595.6]
+Seed :  46787
+Ended episode | Done :  True  | Steps :  3695  | Reward : -2430.795052259861  | Loss:  0.0
+Episode :  16 
+Mean Reward :  0.0 
+Mean Length :  1.0 
+Mean Loss :  0.0 
+Time Delta :  50.51 

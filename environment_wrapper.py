@@ -26,6 +26,7 @@ class GraphWrapper:
     
     # reset the environment to a new seed
     def reset(self, seed:int):
+        print("Seed : ", seed)
         self.env.seed(seed)
         self.env.reset(max_time=np.random.geometric(self.reset_prob))
         self.offset = 0
@@ -84,7 +85,7 @@ class GraphWrapper:
                 return self.env.action_map.inverse_map[node]
             else :
                 return -1
-        reward, done = self.env.step(node, limit)
+        reward, done = self.env.step(node, 1)
         return reward, done
 
     # compute the heuristics to perform an action

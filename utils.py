@@ -3,7 +3,7 @@ import sys
 import itertools
 import numpy as np
 from collections import OrderedDict
-
+print("Entered Utils file")
 
 def aggregate_gradients(gradients):
 

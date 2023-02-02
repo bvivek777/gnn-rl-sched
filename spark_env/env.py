@@ -22,9 +22,10 @@ import networkx as nx
 import torch
 
 class Environment(object):
+    print("Initializing environment class... ")
 
     def __init__(self):
-
+        print("Initializing environment... ")
         # isolated random number generator
         self.np_random = np.random.RandomState()
 

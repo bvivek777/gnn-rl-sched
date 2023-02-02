@@ -12,14 +12,14 @@ class Args() :
         self.job_folder = './spark_env/tpch/'
         self.num_stream_dags = 200
         self.num_stream_dags_grow = 0.2
-        self.stream_interval = 1000
-        self.new_dag_interval = 1000
-        self.warmup_delay = 1000
+        self.stream_interval = 1000 # change to 1
+        self.new_dag_interval = 1000 # not used anywhere
+        self.warmup_delay = 1000 # node warmup delay keep 1000
         self.learn_obj = 'mean' # makespan
         self.reward_scale = 100000.0
         self.cuda = "cuda"
         self.canvas_base = 10
-        self.new_dag_interval_noise = 1000
+        self.new_dag_interval_noise = 1000 # not used anywhere
 
         # Agent
         self.lr = 0.001
@@ -29,6 +29,8 @@ class Args() :
         self.learn_every = 3
         self.sync_every = 1e3
         self.exploration_rate_decay = 0.999992
+        print("Parameters for Environment and Agent set successfully.")
 
 
 args = Args()
+print("Arguments function called successfully.")
